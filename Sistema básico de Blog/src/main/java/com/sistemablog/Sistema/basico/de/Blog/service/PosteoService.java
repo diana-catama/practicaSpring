@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PosteoService implements IservicePosteo{
 
     private IposteoRepository posteoRepository;
+    private IauthorService iauthorService;
+    private IcommentService icommentService;
 
     @Autowired
     public PosteoService(IposteoRepository posteoRepository){
@@ -23,12 +26,27 @@ public class PosteoService implements IservicePosteo{
     }
 
     @Override
-    public Posteo obtenerPorId(Long id) {
+    public Optional<Posteo> obtenerPorId(Long id) {
         return posteoRepository.findById(id);
     }
 
     @Override
     public void guardarPosteo(Posteo posteo) {
         posteoRepository.save(posteo);
+    }
+
+    @Override
+    public void editarPosteo(Long id, Posteo posteo){
+        Posteo existente = posteoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Posteo no encontrado"));
+
+        existente.setTitulo(posteo.getTitulo());
+        existente.setAuthor(posteo.getAuthor());
+        posteoRepository.save(existente);
+    }
+
+    @Override
+    public void eliminarPosteo(Long id){
+        posteoRepository.deleteById(id);
     }
 }

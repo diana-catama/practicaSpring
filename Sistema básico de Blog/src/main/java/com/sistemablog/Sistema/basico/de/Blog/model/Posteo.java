@@ -1,10 +1,30 @@
 package com.sistemablog.Sistema.basico.de.Blog.model;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Posteo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
     private String autor;
+
+    @ManyToOne
+    @JoinColumn(name = "id_author")
+    @JsonBackReference
+    private Author author;
+
+    @OneToMany(mappedBy = "posteo", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
 
     public Posteo() {
     }
@@ -37,6 +57,22 @@ public class Posteo {
 
     public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
 
